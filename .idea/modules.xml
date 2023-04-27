@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/MQTT.iml" filepath="$PROJECT_DIR$/MQTT.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../ES/ProjetoESFase1.iml" filepath="$PROJECT_DIR$/../../ES/ProjetoESFase1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../ES/WorkspaceES/WorkspaceES.iml" filepath="$PROJECT_DIR$/../../ES/WorkspaceES/WorkspaceES.iml" />
+    </modules>
+  </component>
+</project>
