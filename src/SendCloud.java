@@ -116,7 +116,7 @@ public class SendCloud  implements MqttCallback  {
 
         try {
             Properties p = new Properties();
-            p.load(new FileInputStream("SendCloud.ini"));
+            p.load(new FileInputStream("C:\\Users\\joaof\\IdeaProjects\\MQTT\\src\\SendCloud.ini"));
             mongo_address = p.getProperty("mongo_address");
             mongo_user = p.getProperty("mongo_user");
             mongo_password = p.getProperty("mongo_password");
@@ -133,22 +133,25 @@ public class SendCloud  implements MqttCallback  {
             System.out.println("Error reading SendCloud.ini file " + e);
             JOptionPane.showMessageDialog(null, "The SendCloud.ini file wasn't found.", "Send Cloud", JOptionPane.ERROR_MESSAGE);
         }
-//        new SendCloud().connecCloud();
-        new CloudToMongo().connectMongo();
+
+        new SendCloud().connecCloud();
+        new SendCloud().connectMongo();
         createWindow();
 
     }
 
-//    public void connecCloud() {
-//        try {
-//            mqttclient = new MqttClient(cloud_server, "SimulateSensor"+cloud_topic);
-//            mqttclient.connect();
-//            mqttclient.setCallback(this);
-//            mqttclient.subscribe(cloud_topic);
-//        } catch (MqttException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    public void connecCloud() {
+
+        try {
+
+            mqttclient = new MqttClient(cloud_server, "SimulateSensor"+cloud_topic);
+            mqttclient.connect();
+            mqttclient.setCallback(this);
+           mqttclient.subscribe(cloud_topic);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static DBCollection connectMongo() {
         String mongoURI = new String();

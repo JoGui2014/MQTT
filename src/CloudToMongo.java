@@ -52,11 +52,11 @@ public class CloudToMongo  implements MqttCallback {
 	});
 }
 	
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 		createWindow();
         try {
             Properties p = new Properties();
-            p.load(new FileInputStream("C:\\Users\\guiva\\OneDrive\\Documents\\ISCTE\\Terceiro ano ISCTE\\PISID\\monguisse\\src\\CloudToMongo.ini"));
+            p.load(new FileInputStream("C:\\Users\\joaof\\IdeaProjects\\MQTT\\src\\CloudToMongo.ini"));
 			mongo_address = p.getProperty("mongo_address");
             mongo_user = p.getProperty("mongo_user");
             mongo_password = p.getProperty("mongo_password");						
@@ -88,17 +88,18 @@ public class CloudToMongo  implements MqttCallback {
         }
     }
 
-    public void connectMongo() {
-		String mongoURI = new String();
-		mongoURI = "mongodb://";		
+    public void connectMongo()  {
+
+		String mongoURI = "mongodb://";
+
 		if (mongo_authentication.equals("true")) mongoURI = mongoURI + mongo_user + ":" + mongo_password + "@";		
 		mongoURI = mongoURI + mongo_address;		
 		if (!mongo_replica.equals("false")) 
 			if (mongo_authentication.equals("true")) mongoURI = mongoURI + "/?replicaSet=" + mongo_replica+"&authSource=admin";
 			else mongoURI = mongoURI + "/?replicaSet=" + mongo_replica;		
 		else
-			if (mongo_authentication.equals("true")) mongoURI = mongoURI  + "/?authSource=admin";			
-		MongoClient mongoClient = new MongoClient(new MongoClientURI(mongoURI));						
+			if (mongo_authentication.equals("true")) mongoURI = mongoURI  + "/?authSource=admin";
+		MongoClient mongoClient = new MongoClient(new MongoClientURI(mongoURI));
 		db = mongoClient.getDB(mongo_database);
         mongocol = db.getCollection(mongo_collection);		
     }
