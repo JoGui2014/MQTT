@@ -20,7 +20,7 @@ public class SendCloud  implements MqttCallback  {
     static String mongo_database = new String();
     static String mongo_collection = new String();
     static String mongo_authentication = new String();
-//    static String cloud_server = new String();
+    //    static String cloud_server = new String();
 //    static String cloud_topic = new String();
     static JTextArea textArea = new JTextArea(10, 50);
 
