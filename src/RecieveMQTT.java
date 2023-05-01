@@ -44,7 +44,7 @@ public class RecieveMQTT implements MqttCallback {
         createWindow();
         try {
             Properties p = new Properties();
-            p.load(new FileInputStream("ReceiveCloud.ini"));
+            p.load(new FileInputStream("C:\\Users\\guiva\\OneDrive\\Documents\\ISCTE\\Terceiro ano ISCTE\\ES\\MQTT\\src\\SendCloud.ini"));
             cloud_server = p.getProperty("cloud_server");
             cloud_topic = p.getProperty("cloud_topic");
         } catch (Exception e) {

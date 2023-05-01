@@ -41,83 +41,6 @@ public class SendCloud  implements MqttCallback  {
             e.printStackTrace();}
     }
 
-//    private static void createWindow() {
-//        JFrame frame = new JFrame("Send to Cloud");
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        JLabel textLabel = new JLabel("Data to send do broker: ",SwingConstants.CENTER);
-//        JButton b1 = new JButton("Send Data");
-//        frame.getContentPane().add(textLabel, BorderLayout.PAGE_START);
-//        frame.getContentPane().add(textArea, BorderLayout.CENTER);
-//        frame.getContentPane().add(b1, BorderLayout.PAGE_END);
-//        frame.setLocationRelativeTo(null);
-//        frame.pack();
-//        frame.setVisible(true);
-//        b1.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent evt) {
-//                //System.exit(0);
-//                publishSensor(textArea.getText());
-//            }
-//        });
-//    }
-
-//    private void createWindow() {
-//        // Connect to MongoDB
-////        MongoClient mongoClient = new MongoClient("localhost", 27017);
-////        MongoDatabase database = mongoClient.getDatabase("myDatabase");
-////        MongoCollection<Document> collection = database.getCollection("myCollection");
-//        DBCollection collection = connectMongo();
-//
-//        // Connect to MQTT broker
-//        try {
-//            MqttClient mqttClient = new MqttClient("tcp://localhost:1883", MqttClient.generateClientId());
-//            mqttClient.connect();
-//
-//            // Get data from MongoDB and send it to MQTT broker
-//            FindIterable<Document> iterable = collection.find();
-//            for (Document doc : iterable) {
-//                String data = doc.toJson();
-//                MqttMessage message = new MqttMessage(data.getBytes());
-//                mqttClient.publish("myTopic", message);
-//            }
-//
-//            // Disconnect from databases
-//            mqttClient.disconnect();
-//            mongoClient.close();
-//
-//        } catch (MqttSecurityException e) {
-//            e.printStackTrace();
-//        } catch (MqttException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-//    private static void createWindow() {
-//        // Connect to MongoDB and get the collection
-//        DBCollection collection = connectMongo();
-//
-//        // Connect to MQTT broker
-//        try {
-//            MqttClient mqttClient = new MqttClient("tcp://localhost:1883", MqttClient.generateClientId());
-//            mqttClient.connect();
-//
-//            // Get data from MongoDB and send it to MQTT broker
-//            DBCursor cursor = collection.find();
-//            while (cursor.hasNext()) {
-//                String data = cursor.next().toString();
-//                MqttMessage message = new MqttMessage(data.getBytes());
-//                mqttClient.publish("myTopic", message);
-//            }
-//
-//            // Disconnect from databases
-//            mqttClient.disconnect();
-//
-//        } catch (MqttSecurityException e) {
-//            e.printStackTrace();
-//        } catch (MqttException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     private static void createWindow() {
         JFrame frame = new JFrame("Send to Cloud");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -165,7 +88,9 @@ public class SendCloud  implements MqttCallback  {
 
         try {
             Properties p = new Properties();
-            p.load(new FileInputStream("C:\\Users\\joaof\\IdeaProjects\\MQTT\\src\\SendCloud.ini"));
+            p.load(new FileInputStream("C:\\Users\\guiva\\OneDrive\\Documents\\ISCTE\\Terceiro ano ISCTE\\ES\\MQTT\\src\\SendCloud.ini"));
+            cloud_server = p.getProperty("cloud_server");
+            cloud_topic = p.getProperty("cloud_topic");
             mongo_address = p.getProperty("mongo_address");
             mongo_user = p.getProperty("mongo_user");
             mongo_password = p.getProperty("mongo_password");
@@ -186,6 +111,7 @@ public class SendCloud  implements MqttCallback  {
         new SendCloud().connecCloud();
         TimeUnit.SECONDS.sleep(5);
         new SendCloud().connectMongo();
+        System.out.println(mongocol.find().toString());
         createWindow();
 
     }

@@ -1,3 +1,4 @@
+import com.mongodb.*;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -16,11 +17,22 @@ import java.io.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.concurrent.TimeUnit;
 
-public class SendCloud2  implements MqttCallback  {
+public class MongoMqtt  implements MqttCallback  {
     static MqttClient mqttclient;
+    static DB db;
+    static DBCollection mongocol;
     static String cloud_server = new String();
     static String cloud_topic = new String();
+    static String mongo_user = new String();
+    static String mongo_password = new String();
+    static String mongo_address = new String();
+    static String mongo_host = new String();
+    static String mongo_replica = new String();
+    static String mongo_database = new String();
+    static String mongo_collection = new String();
+    static String mongo_authentication = new String();
     static JTextArea textArea = new JTextArea(10, 50);
 
     public static void publishSensor(String leitura) {
@@ -46,7 +58,8 @@ public class SendCloud2  implements MqttCallback  {
         b1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 //System.exit(0);
-                publishSensor(textArea.getText());
+                for (String lalalal: textArea.getText().split("\n")) {
+                    publishSensor(lalalal);}
             }
         });
     }
@@ -57,15 +70,34 @@ public class SendCloud2  implements MqttCallback  {
 
         try {
             Properties p = new Properties();
-            p.load(new FileInputStream("C:\\Users\\joaof\\IdeaProjects\\MQTT\\src\\SendCloud.ini"));
+            p.load(new FileInputStream("C:\\Users\\guiva\\OneDrive\\Documents\\ISCTE\\Terceiro ano ISCTE\\ES\\MQTT\\src\\SendCloud.ini"));
             cloud_server = p.getProperty("cloud_server");
             cloud_topic = p.getProperty("cloud_topic");
+            mongo_address = p.getProperty("mongo_address");
+            mongo_user = p.getProperty("mongo_user");
+            mongo_password = p.getProperty("mongo_password");
+            mongo_replica = p.getProperty("mongo_replica");
+            mongo_host = p.getProperty("mongo_host");
+            mongo_database = p.getProperty("mongo_database");
+            mongo_authentication = p.getProperty("mongo_authentication");
+            mongo_collection = p.getProperty("mongo_collection");
         } catch (Exception e) {
 
             System.out.println("Error reading SendCloud.ini file " + e);
             JOptionPane.showMessageDialog(null, "The SendCloud.ini file wasn't found.", "Send Cloud", JOptionPane.ERROR_MESSAGE);
         }
-        new SendCloud2().connecCloud();
+        connectMongo();
+        DBCursor cursor = mongocol.find();
+
+        // Iterate over the documents
+        while (cursor.hasNext()) {
+            DBObject document = cursor.next();
+            System.out.println(document.get("Sensor"));
+            if(document.get("Sensor") != null)
+                textArea.append("Sensor: " + document.get("Sensor").toString() + "\n");
+        }
+
+        new MongoMqtt().connecCloud();
         createWindow();
 
     }
@@ -79,6 +111,22 @@ public class SendCloud2  implements MqttCallback  {
         } catch (MqttException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void connectMongo()  {
+
+        String mongoURI = "mongodb://";
+
+        if (mongo_authentication.equals("true")) mongoURI = mongoURI + mongo_user + ":" + mongo_password + "@";
+        mongoURI = mongoURI + mongo_address;
+        if (!mongo_replica.equals("false"))
+            if (mongo_authentication.equals("true")) mongoURI = mongoURI + "/?replicaSet=" + mongo_replica+"&authSource=admin";
+            else mongoURI = mongoURI + "/?replicaSet=" + mongo_replica;
+        else
+        if (mongo_authentication.equals("true")) mongoURI = mongoURI  + "/?authSource=admin";
+        MongoClient mongoClient = new MongoClient(new MongoClientURI(mongoURI));
+        db = mongoClient.getDB(mongo_database);
+        mongocol = db.getCollection(mongo_collection);
     }
 
 
