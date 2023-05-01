@@ -21,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 
 public class MongoMqtt  implements MqttCallback  {
     static MqttClient mqttclient;
+    static DBCursor cursor;
+    static DBCursor cursoraux;
     static DB db;
     static DBCollection mongocol;
     static String cloud_server = new String();
@@ -33,13 +35,17 @@ public class MongoMqtt  implements MqttCallback  {
     static String mongo_database = new String();
     static String mongo_collection = new String();
     static String mongo_authentication = new String();
+    static JTextArea documentLabel = new JTextArea("\n");
     static JTextArea textArea = new JTextArea(10, 50);
 
-    public static void publishSensor(String leitura) {
+    public static void publishSensor(String leitura, JButton b1) {
         try {
             MqttMessage mqtt_message = new MqttMessage();
             mqtt_message.setPayload(leitura.getBytes());
+            mqtt_message.setRetained(true);
+            mqtt_message.setQos(1);
             mqttclient.publish(cloud_topic, mqtt_message);
+            sendMongoMQTT(b1, cursor);
         } catch (MqttException e) {
             e.printStackTrace();}
     }
@@ -52,18 +58,34 @@ public class MongoMqtt  implements MqttCallback  {
         frame.getContentPane().add(textLabel, BorderLayout.PAGE_START);
         frame.getContentPane().add(textArea, BorderLayout.CENTER);
         frame.getContentPane().add(b1, BorderLayout.PAGE_END);
+        JScrollPane scroll = new JScrollPane (documentLabel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scroll.setPreferredSize(new Dimension(600, 200));
         frame.setLocationRelativeTo(null);
+        frame.getContentPane().add(scroll, BorderLayout.CENTER);
         frame.pack();
         frame.setVisible(true);
+        cursor = mongocol.find();
+        sendMongoMQTT(b1, cursor);
+    }
+
+    private static void sendMongoMQTT(JButton b1, DBCursor cursor){
+
         b1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 //System.exit(0);
-                for (String lalalal: textArea.getText().split("\n")) {
-                    publishSensor(lalalal);}
-            }
+                publishSensor(textArea.getText(), b1);}
         });
-    }
 
+        // Iterate over the documents
+        while (cursor.hasNext()) {
+            DBObject document = cursor.next();
+            System.out.println(document.get("Sensor"));
+            System.out.println(document.get("Leitura"));
+            if(document.get("Sensor") != null)
+                textArea.append("Sensor: " + document.get("Sensor").toString() + "Leitura: " + document.get("Leitura").toString() + "\n");
+            cursoraux = mongocol.find().skip(cursor.numSeen());
+        }
+    }
 
 
     public static void main(String[] args) {
@@ -87,16 +109,6 @@ public class MongoMqtt  implements MqttCallback  {
             JOptionPane.showMessageDialog(null, "The SendCloud.ini file wasn't found.", "Send Cloud", JOptionPane.ERROR_MESSAGE);
         }
         connectMongo();
-        DBCursor cursor = mongocol.find();
-
-        // Iterate over the documents
-        while (cursor.hasNext()) {
-            DBObject document = cursor.next();
-            System.out.println(document.get("Sensor"));
-            if(document.get("Sensor") != null)
-                textArea.append("Sensor: " + document.get("Sensor").toString() + "\n");
-        }
-
         new MongoMqtt().connecCloud();
         createWindow();
 

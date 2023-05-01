@@ -23,8 +23,7 @@ public class RecieveMQTT implements MqttCallback {
         JLabel textLabel = new JLabel("Data from broker: ",SwingConstants.CENTER);
         textLabel.setPreferredSize(new Dimension(600, 30));
         documentLabel.setPreferredSize(new Dimension(600, 200));
-        JScrollPane scroll = new JScrollPane (documentLabel,
-                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        JScrollPane scroll = new JScrollPane (documentLabel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         frame.add(scroll);
         JButton b1 = new JButton("Stop the program");
         frame.getContentPane().add(textLabel, BorderLayout.PAGE_START);

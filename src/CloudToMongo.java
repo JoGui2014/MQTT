@@ -56,7 +56,7 @@ public class CloudToMongo  implements MqttCallback {
 		createWindow();
         try {
             Properties p = new Properties();
-            p.load(new FileInputStream("C:\\Users\\joaof\\IdeaProjects\\MQTT\\src\\CloudToMongo.ini"));
+            p.load(new FileInputStream("C:\\Users\\guiva\\OneDrive\\Documents\\ISCTE\\Terceiro ano ISCTE\\ES\\MQTT\\src\\CloudToMongo.ini"));
 			mongo_address = p.getProperty("mongo_address");
             mongo_user = p.getProperty("mongo_user");
             mongo_password = p.getProperty("mongo_password");						
