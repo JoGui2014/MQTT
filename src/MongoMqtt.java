@@ -81,7 +81,7 @@ public class MongoMqtt  implements MqttCallback  {
             while (cursor.hasNext()) {
                 DBObject document = cursor.next();
                 int isValid = isValidMessage(document);
-                textArea.append("Sensor: " + document.get("Sensor").toString() + " " +"Data Hora: "+ document.get("DataHora") + "Leitura: " + document.get("Leitura").toString() +  "isValid = " + isValid + "\n");
+                textArea.append("Sensor: " + document.get("Sensor").toString() + " " +"Hora: "+ document.get("Hora") + "Leitura: " + document.get("Leitura").toString() +  "isValid = " + isValid + "\n");
                 System.out.println(textArea.getText());
                 publishSensor(textArea.getText(), b1);
             }
@@ -102,7 +102,7 @@ public class MongoMqtt  implements MqttCallback  {
         }
 
         // Check if DataHora is a date before the current time stamp
-        Object dataHoraObj = document.get("DataHora");
+        Object dataHoraObj = document.get("Hora");
         if (!(dataHoraObj instanceof Date) || ((Date) dataHoraObj).after(new Date())) {
             return 0;
         }
