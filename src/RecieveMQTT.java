@@ -61,10 +61,12 @@ public class RecieveMQTT implements MqttCallback {
         frame.setLocationRelativeTo(null);
         frame.pack();
         frame.setVisible(true);
+        System.out.println("ola");
         b1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 System.exit(0);
             }
+
         });
     }
 
