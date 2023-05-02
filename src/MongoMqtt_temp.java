@@ -8,18 +8,13 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 
 import java.util.*;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
 
-import java.util.Vector;
-import java.io.File;
 import java.io.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.concurrent.TimeUnit;
 
-public class MongoMqtt  implements MqttCallback  {
+public class MongoMqtt_temp implements MqttCallback  {
     static MqttClient mqttclient;
     static DBCursor cursor;
     static DBCursor cursoraux;
@@ -140,7 +135,7 @@ public class MongoMqtt  implements MqttCallback  {
             JOptionPane.showMessageDialog(null, "The SendCloud.ini file wasn't found.", "Send Cloud", JOptionPane.ERROR_MESSAGE);
         }
         connectMongo();
-        new MongoMqtt().connecCloud();
+        new MongoMqtt_temp().connecCloud();
         createWindow();
 
     }
