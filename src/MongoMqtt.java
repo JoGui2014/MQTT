@@ -64,26 +64,32 @@ public class MongoMqtt  implements MqttCallback  {
         frame.getContentPane().add(scroll, BorderLayout.CENTER);
         frame.pack();
         frame.setVisible(true);
-        cursor = mongocol.find();
+        cursoraux = mongocol.find();
         sendMongoMQTT(b1, cursor);
     }
 
-    private static void sendMongoMQTT(JButton b1, DBCursor cursor){
+    private static void sendMongoMQTT(JButton b1, DBCursor cursor) {
 
         b1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 //System.exit(0);
                 publishSensor(textArea.getText(), b1);}
         });
-
-        // Iterate over the documents
-        while (cursor.hasNext()) {
-            DBObject document = cursor.next();
-            if(document.get("Sensor") != null)
+        while(true){
+            cursor = cursoraux;
+        // Iterate over the document
+            while (cursor.hasNext()) {
+                DBObject document = cursor.next();
                 textArea.append("Sensor: " + document.get("Sensor").toString() + " " + "Leitura: " + document.get("Leitura").toString() + "\n");
-            System.out.println(textArea.getText());
-            connectMongo();
+                System.out.println(textArea.getText());
+                publishSensor(textArea.getText(), b1);
+            }
             cursoraux = mongocol.find().skip(cursor.numSeen());
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
