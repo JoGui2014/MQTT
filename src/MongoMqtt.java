@@ -79,10 +79,10 @@ public class MongoMqtt  implements MqttCallback  {
         // Iterate over the documents
         while (cursor.hasNext()) {
             DBObject document = cursor.next();
-            System.out.println(document.get("Sensor"));
-            System.out.println(document.get("Leitura"));
             if(document.get("Sensor") != null)
-                textArea.append("Sensor: " + document.get("Sensor").toString() + "Leitura: " + document.get("Leitura").toString() + "\n");
+                textArea.append("Sensor: " + document.get("Sensor").toString() + " " + "Leitura: " + document.get("Leitura").toString() + "\n");
+            System.out.println(textArea.getText());
+            connectMongo();
             cursoraux = mongocol.find().skip(cursor.numSeen());
         }
     }
