@@ -99,11 +99,12 @@ public class RecieveMQTT implements MqttCallback {
         new RecieveMQTT().ReadData();
         createWindow1();
         createWindow2();
-
+        System.out.println("ola");
     }
 
     public void connecCloud() {
         int i;
+        System.out.println("ola");
         try {
             i = new Random().nextInt(100000);
             mqttclient = new MqttClient(cloud_server, "ReceiveCloud"+String.valueOf(i)+"_"+cloud_topic);
@@ -118,6 +119,7 @@ public class RecieveMQTT implements MqttCallback {
     @Override
     public void messageArrived(String topic, MqttMessage c)
             throws Exception {
+        System.out.println("ola");
         try {
             documentLabel.append(c.toString()+"\n");
         } catch (Exception e) {
@@ -134,6 +136,7 @@ public class RecieveMQTT implements MqttCallback {
     }
 
     public void connectDatabase_to() {
+        System.out.println("ola");
         try {
             Class.forName("org.mariadb.jdbc.Driver");
             connTo =  DriverManager.getConnection(sql_database_connection_to,sql_database_user_to,sql_database_password_to);
@@ -144,6 +147,7 @@ public class RecieveMQTT implements MqttCallback {
 
 
     public void ReadData() {
+        System.out.println("ola");
         String doc = new String();
         int i=0;
         while (i<1) {
@@ -155,6 +159,7 @@ public class RecieveMQTT implements MqttCallback {
     }
 
     public void WriteToMySQL (String c){
+        System.out.println("ola");
         String convertedjson = new String();
         convertedjson = c;
         String fields = new String();
