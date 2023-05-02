@@ -1,25 +1,15 @@
 import com.mongodb.*;
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.*;
 
-
-
-import java.util.*;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-
-import java.util.Vector;
-import java.io.File;
-import java.io.*;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.concurrent.TimeUnit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.util.Date;
+import java.util.Properties;
 
-public class MongoMqtt  implements MqttCallback  {
+public class MongoMqtt_mov implements MqttCallback  {
     static MqttClient mqttclient;
     static DBCursor cursor;
     static DBCursor cursoraux;
@@ -81,7 +71,7 @@ public class MongoMqtt  implements MqttCallback  {
             while (cursor.hasNext()) {
                 DBObject document = cursor.next();
                 int isValid = isValidMessage(document);
-                textArea.append("Sensor: " + document.get("Sensor").toString() + " " +"Hora: "+ document.get("Hora") + "Leitura: " + document.get("Leitura").toString() +  "isValid = " + isValid + "\n");
+                textArea.append("Sensor: " + document.get("Sensor").toString() + " " +"Data Hora: "+ document.get("DataHora") + "Leitura: " + document.get("Leitura").toString() +  "isValid = " + isValid + "\n");
                 System.out.println(textArea.getText());
                 publishSensor(textArea.getText(), b1);
             }
@@ -102,7 +92,7 @@ public class MongoMqtt  implements MqttCallback  {
         }
 
         // Check if DataHora is a date before the current time stamp
-        Object dataHoraObj = document.get("Hora");
+        Object dataHoraObj = document.get("DataHora");
         if (!(dataHoraObj instanceof Date) || ((Date) dataHoraObj).after(new Date())) {
             return 0;
         }
@@ -140,7 +130,7 @@ public class MongoMqtt  implements MqttCallback  {
             JOptionPane.showMessageDialog(null, "The SendCloud.ini file wasn't found.", "Send Cloud", JOptionPane.ERROR_MESSAGE);
         }
         connectMongo();
-        new MongoMqtt().connecCloud();
+        new MongoMqtt_mov().connecCloud();
         createWindow();
 
     }
