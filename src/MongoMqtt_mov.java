@@ -71,7 +71,7 @@ public class MongoMqtt_mov implements MqttCallback  {
             while (cursor.hasNext()) {
                 DBObject document = cursor.next();
                 int isValid = isValidMessage(document);
-                textArea.append("Sensor: " + document.get("Sensor").toString() + " " +"Data Hora: "+ document.get("DataHora") + "Leitura: " + document.get("Leitura").toString() +  "isValid = " + isValid + "\n");
+                textArea.append("Data Hora: "+ document.get("DataHora").toString() + " " + "Veio da sala" + document.get("SalaEntrada").toString() + " " + "para a sala" + document.get("SalaSaida").toString() +  "isValid = " + isValid + "\n");
                 System.out.println(textArea.getText());
                 publishSensor(textArea.getText(), b1);
             }
@@ -86,20 +86,10 @@ public class MongoMqtt_mov implements MqttCallback  {
 
     public static int isValidMessage(DBObject document) {
         // Check if Sensor is an integer bigger than 0
-        Object sensorObj = document.get("Sensor");
-        if (!(sensorObj instanceof Integer) || ((Integer) sensorObj) <= 0) {
-            return 0;
-        }
 
         // Check if DataHora is a date before the current time stamp
         Object dataHoraObj = document.get("DataHora");
         if (!(dataHoraObj instanceof Date) || ((Date) dataHoraObj).after(new Date())) {
-            return 0;
-        }
-
-        // Check if Leitura is a float
-        Object leituraObj = document.get("Leitura");
-        if (!(leituraObj instanceof Float)) {
             return 0;
         }
 
