@@ -96,7 +96,7 @@ public class RecieveMQTT implements MqttCallback {
         new RecieveMQTT().connecCloud();
         new RecieveMQTT().connectDatabase_to();
         System.out.println(documentLabel.getText());
-        new RecieveMQTT().ReadData();
+//        new RecieveMQTT().ReadData();
         //createWindow1();
         createWindow2();
     }
@@ -120,6 +120,7 @@ public class RecieveMQTT implements MqttCallback {
         try {
             String payload = new String(c.getPayload());
             documentLabel.append(payload+"\n");
+            WriteToMySQL(payload);
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -143,19 +144,18 @@ public class RecieveMQTT implements MqttCallback {
     }
 
 
-    public void ReadData() {
-        String doc = new String();
-        int i=0;
-        while (i<1) {
-            doc = "{Name:\"Nome_"+i+"\", Location:\"Portugal\", id:"+i+"}";
-            //WriteToMySQL(com.mongodb.util.JSON.serialize(doc));
-            WriteToMySQL(doc);
-            i++;
-        }
-    }
+//    public void ReadData() {
+//        String doc = new String();
+//        int i=0;
+//        while (i<1) {
+//            //WriteToMySQL(com.mongodb.util.JSON.serialize(doc));
+//            WriteToMySQL(doc);
+//            i++;
+//        }
+//    }
 
     public void WriteToMySQL (String messageMqtt){
-        String SqlCommando = "Insert into " + sql_table_to + "(`Hora`, `Leitura`, `Sensor`, `isValid`)" + "VALUES" + "(" + messageMqtt.split("")[1] + "," + messageMqtt.split("")[3] + messageMqtt.split("")[4] + "," + messageMqtt.split("")[6] + "," + messageMqtt.split("")[7] + "," + ")";
+        String SqlCommando = "Insert into " + sql_table_to + "(`Hora`, `Leitura`, `Sensor`, `isValid`)" + " " + "VALUES" + " " + "(" + messageMqtt.split(" ")[1] + "," + messageMqtt.split(" ")[3] + " " + messageMqtt.split(" ")[4] + "," + messageMqtt.split(" ")[6] + "," + messageMqtt.split(" ")[7] + ")";
         //System.out.println(SqlCommando);
         try {
             documentLabel.append(SqlCommando.toString()+"\n");
