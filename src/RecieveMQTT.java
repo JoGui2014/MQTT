@@ -155,6 +155,7 @@ public class RecieveMQTT implements MqttCallback {
     }
 
     public void WriteToMySQL (String c){
+        System.out.println("ola");
         String convertedjson = new String();
         convertedjson = c;
         String fields = new String();
