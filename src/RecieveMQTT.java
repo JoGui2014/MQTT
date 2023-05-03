@@ -154,28 +154,8 @@ public class RecieveMQTT implements MqttCallback {
         }
     }
 
-    public void WriteToMySQL (String c){
-        System.out.println("ola");
-        String convertedjson = new String();
-        convertedjson = c;
-        String fields = new String();
-        String values = new String();
-        String SqlCommando = new String();
-        String column_database = new String();
-        fields = "";
-        values = "";
-        column_database = " ";
-        String x = convertedjson.toString();
-        String[] splitArray = x.split(",");
-        for (int i=0; i<splitArray.length; i++) {
-            String[] splitArray2 = splitArray[i].split(":");
-            if (i==0) fields = splitArray2[0];
-            else fields = fields + ", " + splitArray2[0] ;
-            if (i==0) values = splitArray2[1];
-            else values = values + ", " + splitArray2[1];
-        }
-        fields = fields.replace("\"", "");
-        SqlCommando = "Insert into " + sql_table_to + " (" + fields.substring(1, fields.length()) + ") values (" + values.substring(0, values.length()-1) + ");";
+    public void WriteToMySQL (String messageMqtt){
+        String SqlCommando = "Insert into " + sql_table_to + "(`Hora`, `Leitura`, `Sensor`, `isValid`)" + "VALUES" + "(" + messageMqtt.split("")[1] + "," + messageMqtt.split("")[3] + messageMqtt.split("")[4] + "," + messageMqtt.split("")[6] + "," + messageMqtt.split("")[7] + "," + ")";
         //System.out.println(SqlCommando);
         try {
             documentLabel.append(SqlCommando.toString()+"\n");
