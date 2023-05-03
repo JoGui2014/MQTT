@@ -58,7 +58,7 @@ public class WriteMysql {
         createWindow();
         try {
             Properties p = new Properties();
-            p.load(new FileInputStream("C:\\Users\\afons\\IdeaProjects\\MQTT\\src\\WriteMysql.ini"));
+            p.load(new FileInputStream("C:\\Users\\guiva\\OneDrive\\Documents\\ISCTE\\Terceiro ano ISCTE\\ES\\MQTT\\src\\WriteMysql.ini"));
             sql_table_to= p.getProperty("sql_table_to");
             sql_database_connection_to = p.getProperty("sql_database_connection_to");
             sql_database_password_to = p.getProperty("sql_database_password_to");

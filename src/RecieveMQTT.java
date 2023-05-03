@@ -25,28 +25,28 @@ public class RecieveMQTT implements MqttCallback {
     static String sql_database_user_to= new String();
     static String  sql_table_to= new String();
 
-    private static void createWindow1() {
-        JFrame frame = new JFrame("Receive Cloud");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JLabel textLabel = new JLabel("Data from broker: ",SwingConstants.CENTER);
-        textLabel.setPreferredSize(new Dimension(600, 30));
-        documentLabel.setPreferredSize(new Dimension(600, 200));
-        String aux = documentLabel.toString();
-        JScrollPane scroll = new JScrollPane (documentLabel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        frame.add(scroll);
-        JButton b1 = new JButton("Stop the program");
-        frame.getContentPane().add(textLabel, BorderLayout.PAGE_START);
-        frame.getContentPane().add(scroll, BorderLayout.CENTER);
-        frame.getContentPane().add(b1, BorderLayout.PAGE_END);
-        frame.setLocationRelativeTo(null);
-        frame.pack();
-        frame.setVisible(true);
-        b1.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                System.exit(0);
-            }
-        });
-    }
+//    private static void createWindow1() {
+//        JFrame frame = new JFrame("Receive Cloud");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        JLabel textLabel = new JLabel("Data from broker: ",SwingConstants.CENTER);
+//        textLabel.setPreferredSize(new Dimension(600, 30));
+//        documentLabel.setPreferredSize(new Dimension(600, 200));
+//        System.out.println(documentLabel.getText());
+//        JScrollPane scroll = new JScrollPane (documentLabel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+//        frame.add(scroll);
+//        JButton b1 = new JButton("Stop the program");
+//        frame.getContentPane().add(textLabel, BorderLayout.PAGE_START);
+//        frame.getContentPane().add(scroll, BorderLayout.CENTER);
+//        frame.getContentPane().add(b1, BorderLayout.PAGE_END);
+//        frame.setLocationRelativeTo(null);
+//        frame.pack();
+//        frame.setVisible(true);
+//        b1.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent evt) {
+//                System.exit(0);
+//            }
+//        });
+//    }
     private static void createWindow2() {
         JFrame frame = new JFrame("Data Bridge");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -61,7 +61,6 @@ public class RecieveMQTT implements MqttCallback {
         frame.setLocationRelativeTo(null);
         frame.pack();
         frame.setVisible(true);
-        System.out.println("ola");
         b1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 System.exit(0);
@@ -85,7 +84,7 @@ public class RecieveMQTT implements MqttCallback {
         }
         try{
             Properties b = new Properties();
-            b.load(new FileInputStream("C:\\Users\\afons\\IdeaProjects\\MQTT\\src\\WriteMysql.ini"));
+            b.load(new FileInputStream("C:\\Users\\guiva\\OneDrive\\Documents\\ISCTE\\Terceiro ano ISCTE\\ES\\MQTT\\src\\WriteMysql.ini"));
             sql_table_to= b.getProperty("sql_table_to");
             sql_database_connection_to = b.getProperty("sql_database_connection_to");
             sql_database_password_to = b.getProperty("sql_database_password_to");
@@ -95,16 +94,15 @@ public class RecieveMQTT implements MqttCallback {
             JOptionPane.showMessageDialog(null, "The WriteMysql inifile wasn't found.", "Data Migration", JOptionPane.ERROR_MESSAGE);
         }
         new RecieveMQTT().connecCloud();
-        new WriteMysql().connectDatabase_to();
+        new RecieveMQTT().connectDatabase_to();
+        System.out.println(documentLabel.getText());
         new RecieveMQTT().ReadData();
-        createWindow1();
+        //createWindow1();
         createWindow2();
-        System.out.println("ola");
     }
 
     public void connecCloud() {
         int i;
-        System.out.println("ola");
         try {
             i = new Random().nextInt(100000);
             mqttclient = new MqttClient(cloud_server, "ReceiveCloud"+String.valueOf(i)+"_"+cloud_topic);
@@ -119,9 +117,9 @@ public class RecieveMQTT implements MqttCallback {
     @Override
     public void messageArrived(String topic, MqttMessage c)
             throws Exception {
-        System.out.println("ola");
         try {
-            documentLabel.append(c.toString()+"\n");
+            String payload = new String(c.getPayload());
+            documentLabel.append(payload+"\n");
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -136,18 +134,16 @@ public class RecieveMQTT implements MqttCallback {
     }
 
     public void connectDatabase_to() {
-        System.out.println("ola");
         try {
             Class.forName("org.mariadb.jdbc.Driver");
             connTo =  DriverManager.getConnection(sql_database_connection_to,sql_database_user_to,sql_database_password_to);
-            documentLabel.append("SQl Connection:"+sql_database_connection_to+"\n");
+            documentLabel.setText("SQl Connection:"+sql_database_connection_to+"\n");
             documentLabel.append("Connection To MariaDB Destination " + sql_database_connection_to + " Suceeded"+"\n");
         } catch (Exception e){System.out.println("Mysql Server Destination down, unable to make the connection. "+e);}
     }
 
 
     public void ReadData() {
-        System.out.println("ola");
         String doc = new String();
         int i=0;
         while (i<1) {
@@ -159,7 +155,6 @@ public class RecieveMQTT implements MqttCallback {
     }
 
     public void WriteToMySQL (String c){
-        System.out.println("ola");
         String convertedjson = new String();
         convertedjson = c;
         String fields = new String();

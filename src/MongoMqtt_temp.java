@@ -65,18 +65,18 @@ public class MongoMqtt_temp implements MqttCallback  {
 
     private static void sendMongoMQTT(JButton b1, DBCursor cursor) {
 
-        b1.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                //System.exit(0);
-                publishSensor(textArea.getText(), b1);}
-        });
+//        b1.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent evt) {
+//                //System.exit(0);
+//                publishSensor(textArea.getText(), b1);}
+//        });
         while(true){
             cursor = cursoraux;
             // Iterate over the document
             while (cursor.hasNext()) {
                 DBObject document = cursor.next();
                 int isValid = isValidMessage(document);
-                textArea.append("Sensor: " + document.get("Sensor").toString() + " " +"Hora: "+ document.get("Hora") + "Leitura: " + document.get("Leitura").toString() +  "isValid = " + isValid + "\n");
+                textArea.setText("Sensor: " + document.get("Sensor").toString() + " " + "Hora: "+ document.get("Hora").toString() + " " + "Leitura: " + document.get("Leitura").toString() + " " + "isValid = " + isValid + "\n");
                 System.out.println(textArea.getText());
                 publishSensor(textArea.getText(), b1);
             }
