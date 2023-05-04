@@ -96,7 +96,7 @@ public class MongoMqtt_temp implements MqttCallback  {
     public static int isValidMessage(DBObject document) {
         // Check if Sensor is an integer bigger than 0
         Object sensorObj = document.get("Sensor");
-        if (!(sensorObj instanceof Integer) || ((Integer) sensorObj) <= 0) {
+        if (!((String)sensorObj).matches("^[1-9][0-9]*$")) {
             return 0;
         }
         // Check if DataHora is a date before the current time stamp and check for duplicates

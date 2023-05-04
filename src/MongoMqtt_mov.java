@@ -89,8 +89,9 @@ public class MongoMqtt_mov implements MqttCallback  {
     }
 
     public static int isValidMessage(DBObject document) {
-        // Check if Sensor is an integer bigger than 0
-
+        // Check if Sala is a number != 0 
+        if(document.get("SalaEntrada").toString().matches("^[1-9][0-9]*$") || document.get("SalaSaida").toString().matches("^[1-9][0-9]*$"))
+            return 0;
         // Check if DataHora is a date before the current time stamp
         Object dataHoraObj = document.get("Hora");
         LocalDate date = LocalDate.parse(dataHoraObj.toString().split(" ",0)[0]);
