@@ -6,7 +6,9 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 
-
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import java.io.*;
@@ -32,6 +34,8 @@ public class MongoMqtt_temp implements MqttCallback  {
     static String mongo_authentication = new String();
     static JTextArea documentLabel = new JTextArea("\n");
     static JTextArea textArea = new JTextArea(10, 50);
+    static LocalDate Last_Date; // Used in verifications to prevent duplicates
+    static LocalTime Last_Time; // Used in verifications to prevent duplicates
 
     public static void publishSensor(String leitura, JButton b1) {
         try {
@@ -92,19 +96,24 @@ public class MongoMqtt_temp implements MqttCallback  {
     public static int isValidMessage(DBObject document) {
         // Check if Sensor is an integer bigger than 0
         Object sensorObj = document.get("Sensor");
-        if (!(sensorObj instanceof Integer) || ((Integer) sensorObj) <= 0) {
+        if (!((String)sensorObj).matches("^[1-9][0-9]*$")) {
             return 0;
         }
-
-        // Check if DataHora is a date before the current time stamp
+        // Check if DataHora is a date before the current time stamp and check for duplicates
         Object dataHoraObj = document.get("Hora");
-        if (!(dataHoraObj instanceof Date) || ((Date) dataHoraObj).after(new Date())) {
-            return 0;
+        LocalDate date = LocalDate.parse(dataHoraObj.toString().split(" ",0)[0]);
+        LocalTime time = LocalTime.parse(dataHoraObj.toString().split(" ",0)[1]);
+        if (Last_Date != null || Last_Time != null) {
+            if (date.isBefore(Last_Date) || time.isBefore(Last_Time) || date.isAfter(LocalDate.now()) || ChronoUnit.DAYS.between(Last_Date, date) > 1)
+                return 0; //duplicado
+            else
+                Last_Time= time;
+            Last_Date= date;
         }
 
-        // Check if Leitura is a float
+        // Check if temperatura only has , . and numbers
         Object leituraObj = document.get("Leitura");
-        if (!(leituraObj instanceof Float)) {
+        if (!((String)leituraObj).matches("^[0-9,.]*$")) {
             return 0;
         }
 

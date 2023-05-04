@@ -6,6 +6,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.Properties;
 
@@ -27,6 +29,8 @@ public class MongoMqtt_mov implements MqttCallback  {
     static String mongo_authentication = new String();
     static JTextArea documentLabel = new JTextArea("\n");
     static JTextArea textArea = new JTextArea(10, 50);
+    static LocalDate Last_Date; // Used in verifications to prevent duplicates
+    static LocalTime Last_Time; // Used in verifications to prevent duplicates
 
     public static void publishSensor(String leitura, JButton b1) {
         try {
@@ -85,12 +89,19 @@ public class MongoMqtt_mov implements MqttCallback  {
     }
 
     public static int isValidMessage(DBObject document) {
-        // Check if Sensor is an integer bigger than 0
-
-        // Check if DataHora is a date before the current time stamp
-        Object dataHoraObj = document.get("DataHora");
-        if (!(dataHoraObj instanceof Date) || ((Date) dataHoraObj).after(new Date())) {
+        // Check if Sala is a number != 0 
+        if(document.get("SalaEntrada").toString().matches("^[1-9][0-9]*$") || document.get("SalaSaida").toString().matches("^[1-9][0-9]*$"))
             return 0;
+        // Check if DataHora is a date before the current time stamp
+        Object dataHoraObj = document.get("Hora");
+        LocalDate date = LocalDate.parse(dataHoraObj.toString().split(" ",0)[0]);
+        LocalTime time = LocalTime.parse(dataHoraObj.toString().split(" ",0)[1]);
+        if (Last_Date != null || Last_Time != null) {
+            if (date.isBefore(Last_Date) || time.isBefore(Last_Time))
+                return 0;
+            else
+                Last_Time= time;
+                Last_Date= date;
         }
 
         // All checks passed, return 1
@@ -103,7 +114,7 @@ public class MongoMqtt_mov implements MqttCallback  {
 
         try {
             Properties p = new Properties();
-            p.load(new FileInputStream("C:\\Users\\guiva\\OneDrive\\Documents\\ISCTE\\Terceiro ano ISCTE\\ES\\MQTT\\src\\SendCloud.ini"));
+            p.load(new FileInputStream("C:\\Users\\joaof\\IdeaProjects\\MQTT\\src\\SendCloud.ini"));
             cloud_server = p.getProperty("cloud_server");
             cloud_topic = p.getProperty("cloud_topic");
             mongo_address = p.getProperty("mongo_address");
