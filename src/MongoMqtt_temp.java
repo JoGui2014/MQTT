@@ -16,7 +16,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class MongoMqtt_temp implements MqttCallback  {
+public class MongoMqtt_temp implements MqttCallback {
     static MqttClient mqttclient;
     static DBCursor cursor;
     static DBCursor cursoraux;
@@ -42,22 +42,23 @@ public class MongoMqtt_temp implements MqttCallback  {
             MqttMessage mqtt_message = new MqttMessage();
             mqtt_message.setPayload(leitura.getBytes());
             mqtt_message.setRetained(true);
-            mqtt_message.setQos(1);
+            mqtt_message.setQos(2);
             mqttclient.publish(cloud_topic, mqtt_message);
             sendMongoMQTT(b1, cursor);
         } catch (MqttException e) {
-            e.printStackTrace();}
+            e.printStackTrace();
+        }
     }
 
     private static void createWindow() {
         JFrame frame = new JFrame("Send to Cloud");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JLabel textLabel = new JLabel("Data to send do broker: ",SwingConstants.CENTER);
+        JLabel textLabel = new JLabel("Data to send do broker: ", SwingConstants.CENTER);
         JButton b1 = new JButton("Send Data");
         frame.getContentPane().add(textLabel, BorderLayout.PAGE_START);
         frame.getContentPane().add(textArea, BorderLayout.CENTER);
         frame.getContentPane().add(b1, BorderLayout.PAGE_END);
-        JScrollPane scroll = new JScrollPane (documentLabel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        JScrollPane scroll = new JScrollPane(documentLabel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scroll.setPreferredSize(new Dimension(600, 200));
         frame.setLocationRelativeTo(null);
         frame.getContentPane().add(scroll, BorderLayout.CENTER);
@@ -74,14 +75,15 @@ public class MongoMqtt_temp implements MqttCallback  {
 //                //System.exit(0);
 //                publishSensor(textArea.getText(), b1);}
 //        });
-        while(true){
+        while (true) {
 //            cursor = cursoraux;
             // Iterate over the document
             while (cursoraux.hasNext()) {
                 DBObject document = cursoraux.next();
                 int isValid = isValidMessage(document);
-                textArea.setText("Sensor: " + document.get("Sensor").toString() + " " + "Hora: "+ document.get("Hora").toString() + " " + "Leitura: " + document.get("Leitura").toString() + " " + "isValid = " + isValid + "\n");
-                System.out.println(textArea.getText());
+                System.out.println();
+                textArea.setText("Sensor: " + document.get("Sensor").toString() + " " + "Hora: " + document.get("Hora").toString() + " " + "Leitura: " + document.get("Leitura").toString() + " " + "isValid = " + isValid + "\n");
+//                System.out.println(textArea.getText());
                 publishSensor(textArea.getText(), b1);
             }
             cursoraux = mongocol.find().skip(cursoraux.numSeen());
@@ -95,32 +97,32 @@ public class MongoMqtt_temp implements MqttCallback  {
 
     public static int isValidMessage(DBObject document) {
         // Check if Sensor is an integer bigger than 0
-        Object sensorObj = document.get("Sensor");
-        if (!((String)sensorObj).matches("^[1-9][0-9]*$")) {
-            return 0;
-        }
+//        Object sensorObj = document.get("Sensor");
+//        if (!((String)sensorObj).matches("^[1-9][0-9]*$")) {
+//            return 0;
+//        }
         // Check if DataHora is a date before the current time stamp and check for duplicates
-        Object dataHoraObj = document.get("Hora");
-        LocalDate date = LocalDate.parse(dataHoraObj.toString().split(" ",0)[0]);
-        LocalTime time = LocalTime.parse(dataHoraObj.toString().split(" ",0)[1]);
-        if (Last_Date != null || Last_Time != null) {
-            if (date.isBefore(Last_Date) || time.isBefore(Last_Time) || date.isAfter(LocalDate.now()) || ChronoUnit.DAYS.between(Last_Date, date) > 1)
-                return 0; //duplicado
-            else
-                Last_Time= time;
-            Last_Date= date;
-        }
+//        Object dataHoraObj = document.get("Hora");
+//        LocalDate date = LocalDate.parse(dataHoraObj.toString().split(" ",0)[0]);
+//        LocalTime time = LocalTime.parse(dataHoraObj.toString().split(" ",0)[1]);
+//        if (Last_Date != null || Last_Time != null) {
+//            if (date.isBefore(Last_Date) || time.isBefore(Last_Time) || date.isAfter(LocalDate.now()) || ChronoUnit.DAYS.between(Last_Date, date) > 1)
+//                return 0; //duplicado
+//            else {
+//                Last_Time = time;
+//                Last_Date = date;
+//            }
+//        }
 
         // Check if temperatura only has , . and numbers
-        Object leituraObj = document.get("Leitura");
-        if (!((String)leituraObj).matches("^[0-9,.]*$")) {
-            return 0;
-        }
+//        Object leituraObj = document.get("Leitura");
+//        if (!((String)leituraObj).matches("^[0-9,.]*$")) {
+//            return 0;
+//        }
 
         // All checks passed, return 1
         return 1;
     }
-
 
 
     public static void main(String[] args) {
@@ -151,7 +153,7 @@ public class MongoMqtt_temp implements MqttCallback  {
 
     public void connecCloud() {
         try {
-            mqttclient = new MqttClient(cloud_server, "SimulateSensor"+cloud_topic);
+            mqttclient = new MqttClient(cloud_server, "SimulateSensor" + cloud_topic);
             mqttclient.connect();
             mqttclient.setCallback(this);
             mqttclient.subscribe(cloud_topic);
@@ -160,17 +162,17 @@ public class MongoMqtt_temp implements MqttCallback  {
         }
     }
 
-    public static void connectMongo()  {
+    public static void connectMongo() {
 
         String mongoURI = "mongodb://";
 
         if (mongo_authentication.equals("true")) mongoURI = mongoURI + mongo_user + ":" + mongo_password + "@";
         mongoURI = mongoURI + mongo_address;
         if (!mongo_replica.equals("false"))
-            if (mongo_authentication.equals("true")) mongoURI = mongoURI + "/?replicaSet=" + mongo_replica+"&authSource=admin";
+            if (mongo_authentication.equals("true"))
+                mongoURI = mongoURI + "/?replicaSet=" + mongo_replica + "&authSource=admin";
             else mongoURI = mongoURI + "/?replicaSet=" + mongo_replica;
-        else
-        if (mongo_authentication.equals("true")) mongoURI = mongoURI  + "/?authSource=admin";
+        else if (mongo_authentication.equals("true")) mongoURI = mongoURI + "/?authSource=admin";
         MongoClient mongoClient = new MongoClient(new MongoClientURI(mongoURI));
         db = mongoClient.getDB(mongo_database);
         mongocol = db.getCollection(mongo_collection);
@@ -178,10 +180,15 @@ public class MongoMqtt_temp implements MqttCallback  {
 
 
     @Override
-    public void connectionLost(Throwable cause) {    }
+    public void connectionLost(Throwable cause) {
+    }
+
     @Override
-    public void deliveryComplete(IMqttDeliveryToken token) { }
+    public void deliveryComplete(IMqttDeliveryToken token) {
+    }
+
     @Override
-    public void messageArrived(String topic, MqttMessage message){ }
+    public void messageArrived(String topic, MqttMessage message) {
+    }
 
 }
