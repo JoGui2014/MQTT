@@ -129,7 +129,7 @@ public class MongoMqtt_temp implements MqttCallback {
 
         try {
             Properties p = new Properties();
-            p.load(new FileInputStream("C:\\Users\\guiva\\OneDrive\\Documents\\ISCTE\\Terceiro ano ISCTE\\ES\\MQTT\\src\\SendCloud.ini"));
+            p.load(new FileInputStream("C:\\Users\\afons\\IdeaProjects\\MQTT\\src\\ReceiveCloud.ini"));
             cloud_server = p.getProperty("cloud_server");
             cloud_topic = p.getProperty("cloud_topic");
             mongo_address = p.getProperty("mongo_address");

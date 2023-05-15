@@ -88,7 +88,7 @@ public class SendCloud  implements MqttCallback  {
 
         try {
             Properties p = new Properties();
-            p.load(new FileInputStream("C:\\Users\\guiva\\OneDrive\\Documents\\ISCTE\\Terceiro ano ISCTE\\ES\\MQTT\\src\\SendCloud.ini"));
+            p.load(new FileInputStream("C:\\Users\\afons\\IdeaProjects\\MQTT\\src\\SendCloud.ini"));
             cloud_server = p.getProperty("cloud_server");
             cloud_topic = p.getProperty("cloud_topic");
             mongo_address = p.getProperty("mongo_address");
@@ -130,16 +130,9 @@ public class SendCloud  implements MqttCallback  {
     }
 
     public static DBCollection connectMongo() {
-        String mongoURI = new String();
-        mongoURI = "mongodb://";
-        if (mongo_authentication.equals("true")) mongoURI = mongoURI + mongo_user + ":" + mongo_password + "@";
-        mongoURI = mongoURI + mongo_address;
-        if (!mongo_replica.equals("false"))
-            if (mongo_authentication.equals("true")) mongoURI = mongoURI + "/?replicaSet=" + mongo_replica+"&authSource=admin";
-            else mongoURI = mongoURI + "/?replicaSet=" + mongo_replica;
-        else
-        if (mongo_authentication.equals("true")) mongoURI = mongoURI  + "/?authSource=admin";
-        MongoClient mongoClient = new MongoClient(new MongoClientURI(mongoURI));
+        String connectionString = "mongodb+srv://root:root@pisid.ltsf1ht.mongodb.net/?retryWrites=true&w=majority";
+        MongoClientURI uri = new MongoClientURI(connectionString);
+        MongoClient mongoClient = new MongoClient(uri);
         db = mongoClient.getDB(mongo_database);
         mongocol = db.getCollection(mongo_collection);
         return mongocol;
