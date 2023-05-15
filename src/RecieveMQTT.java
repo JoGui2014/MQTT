@@ -74,7 +74,7 @@ public class RecieveMQTT implements MqttCallback {
         try {
             Properties p = new Properties();
 
-            p.load(new FileInputStream("C:\\Users\\guiva\\OneDrive\\Documents\\ISCTE\\Terceiro ano ISCTE\\ES\\MQTT\\src\\SendCloud.ini"));
+            p.load(new FileInputStream("C:\\Users\\afons\\IdeaProjects\\MQTT\\src\\ReceiveCloud.ini"));
 
             cloud_server = p.getProperty("cloud_server");
             cloud_topic = p.getProperty("cloud_topic");
@@ -84,7 +84,7 @@ public class RecieveMQTT implements MqttCallback {
         }
         try{
             Properties b = new Properties();
-            b.load(new FileInputStream("C:\\Users\\guiva\\OneDrive\\Documents\\ISCTE\\Terceiro ano ISCTE\\ES\\MQTT\\src\\WriteMysql.ini"));
+            b.load(new FileInputStream("C:\\Users\\afons\\IdeaProjects\\MQTT\\src\\WriteMysql.ini"));
             sql_table_to= b.getProperty("sql_table_to");
             sql_database_connection_to = b.getProperty("sql_database_connection_to");
             sql_database_password_to = b.getProperty("sql_database_password_to");

@@ -129,7 +129,7 @@ public class MongoMqtt_temp implements MqttCallback {
 
         try {
             Properties p = new Properties();
-            p.load(new FileInputStream("C:\\Users\\afons\\IdeaProjects\\MQTT\\src\\ReceiveCloud.ini"));
+            p.load(new FileInputStream("C:\\Users\\afons\\IdeaProjects\\MQTT\\src\\SendCloud.ini"));
             cloud_server = p.getProperty("cloud_server");
             cloud_topic = p.getProperty("cloud_topic");
             mongo_address = p.getProperty("mongo_address");
@@ -163,7 +163,7 @@ public class MongoMqtt_temp implements MqttCallback {
     }
 
     public static void connectMongo() {
-        String connectionString = "mongodb+srv://root:root@pisid.ltsf1ht.mongodb.net/?retryWrites=true&w=majority";
+        String connectionString = mongo_address;
         MongoClientURI uri = new MongoClientURI(connectionString);
         MongoClient mongoClient = new MongoClient(uri);
         db = mongoClient.getDB("experiencia");
