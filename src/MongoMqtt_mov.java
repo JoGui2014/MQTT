@@ -114,9 +114,9 @@ public class MongoMqtt_mov implements MqttCallback  {
 
         try {
             Properties p = new Properties();
-            p.load(new FileInputStream("C:\\Users\\joaof\\IdeaProjects\\MQTT\\src\\SendCloud.ini"));
+            p.load(new FileInputStream("src/SendCloud.ini"));
             cloud_server = p.getProperty("cloud_server");
-            cloud_topic = p.getProperty("cloud_topic");
+            cloud_topic = p.getProperty("cloud_topic_mov");
             mongo_address = p.getProperty("mongo_address");
             mongo_user = p.getProperty("mongo_user");
             mongo_password = p.getProperty("mongo_password");
@@ -124,7 +124,7 @@ public class MongoMqtt_mov implements MqttCallback  {
             mongo_host = p.getProperty("mongo_host");
             mongo_database = p.getProperty("mongo_database");
             mongo_authentication = p.getProperty("mongo_authentication");
-            mongo_collection = p.getProperty("mongo_collection");
+            mongo_collection = p.getProperty("mongo_collection_mov");
         } catch (Exception e) {
 
             System.out.println("Error reading SendCloud.ini file " + e);

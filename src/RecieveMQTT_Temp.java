@@ -14,7 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class RecieveMQTT implements MqttCallback {
+public class RecieveMQTT_Temp implements MqttCallback {
     MqttClient mqttclient;
     static String cloud_server = new String();
     static String cloud_topic = new String();
@@ -25,28 +25,6 @@ public class RecieveMQTT implements MqttCallback {
     static String sql_database_user_to= new String();
     static String  sql_table_to= new String();
 
-//    private static void createWindow1() {
-//        JFrame frame = new JFrame("Receive Cloud");
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        JLabel textLabel = new JLabel("Data from broker: ",SwingConstants.CENTER);
-//        textLabel.setPreferredSize(new Dimension(600, 30));
-//        documentLabel.setPreferredSize(new Dimension(600, 200));
-//        System.out.println(documentLabel.getText());
-//        JScrollPane scroll = new JScrollPane (documentLabel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-//        frame.add(scroll);
-//        JButton b1 = new JButton("Stop the program");
-//        frame.getContentPane().add(textLabel, BorderLayout.PAGE_START);
-//        frame.getContentPane().add(scroll, BorderLayout.CENTER);
-//        frame.getContentPane().add(b1, BorderLayout.PAGE_END);
-//        frame.setLocationRelativeTo(null);
-//        frame.pack();
-//        frame.setVisible(true);
-//        b1.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent evt) {
-//                System.exit(0);
-//            }
-//        });
-//    }
     private static void createWindow2() {
         JFrame frame = new JFrame("Data Bridge");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -74,17 +52,17 @@ public class RecieveMQTT implements MqttCallback {
         try {
             Properties p = new Properties();
 
-            p.load(new FileInputStream("C:\\Users\\afons\\IdeaProjects\\MQTT\\src\\ReceiveCloud.ini"));
+            p.load(new FileInputStream("src\\ReceiveCloud.ini"));
 
             cloud_server = p.getProperty("cloud_server");
-            cloud_topic = p.getProperty("cloud_topic");
+            cloud_topic = p.getProperty("cloud_topic_temp");
         } catch (Exception e) {
             System.out.println("Error reading ReceiveCloud.ini file " + e);
             JOptionPane.showMessageDialog(null, "The ReceiveCloud.inifile wasn't found.", "Receive Cloud", JOptionPane.ERROR_MESSAGE);
         }
         try{
             Properties b = new Properties();
-            b.load(new FileInputStream("C:\\Users\\afons\\IdeaProjects\\MQTT\\src\\WriteMysql.ini"));
+            b.load(new FileInputStream("src\\WriteMysql.ini"));
             sql_table_to= b.getProperty("sql_table_to");
             sql_database_connection_to = b.getProperty("sql_database_connection_to");
             sql_database_password_to = b.getProperty("sql_database_password_to");
@@ -93,11 +71,9 @@ public class RecieveMQTT implements MqttCallback {
             System.out.println("Error reading WriteMysql.ini file " + e);
             JOptionPane.showMessageDialog(null, "The WriteMysql inifile wasn't found.", "Data Migration", JOptionPane.ERROR_MESSAGE);
         }
-        new RecieveMQTT().connecCloud();
-        new RecieveMQTT().connectDatabase_to();
+        new RecieveMQTT_Temp().connecCloud();
+        new RecieveMQTT_Temp().connectDatabase_to();
         System.out.println(documentLabel.getText());
-//        new RecieveMQTT().ReadData();
-        //createWindow1();
         createWindow2();
     }
 
@@ -143,19 +119,8 @@ public class RecieveMQTT implements MqttCallback {
         } catch (Exception e){System.out.println("Mysql Server Destination down, unable to make the connection. "+e);}
     }
 
-
-//    public void ReadData() {
-//        String doc = new String();
-//        int i=0;
-//        while (i<1) {
-//            //WriteToMySQL(com.mongodb.util.JSON.serialize(doc));
-//            WriteToMySQL(doc);
-//            i++;
-//        }
-//    }
-
     public void WriteToMySQL (String messageMqtt){
-        System.out.println("pillaaaaaaa" + "\"" + messageMqtt.split(" ")[3] + " " + messageMqtt.split(" ")[4] + "\"");
+//        System.out.println( "\"" + messageMqtt.split(" ")[3] + " " + messageMqtt.split(" ")[4] + "\"");
         String SqlCommando = "Insert into " + sql_table_to + "(`Hora`, `Leitura`, `Sensor`, `isValid`)" + " " + "VALUES" + " " + "(" + "\"" + messageMqtt.split(" ")[3] + " " + messageMqtt.split(" ")[4] + "\"" + "," + messageMqtt.split(" ")[6] + "," + messageMqtt.split(" ")[1] + "," + messageMqtt.split(" ")[9] + ")";
         try {
             documentLabel.append(SqlCommando.toString()+"\n");

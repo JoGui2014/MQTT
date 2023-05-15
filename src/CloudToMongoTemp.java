@@ -12,9 +12,8 @@ import java.io.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.net.URLEncoder;
 
-public class CloudToMongo  implements MqttCallback {
+public class CloudToMongoTemp implements MqttCallback {
     MqttClient mqttclient;
     static DB db;
     static DBCollection mongocol;
@@ -56,23 +55,23 @@ public class CloudToMongo  implements MqttCallback {
 		createWindow();
         try {
             Properties p = new Properties();
-            p.load(new FileInputStream("C:\\Users\\guiva\\OneDrive\\Documents\\ISCTE\\Terceiro ano ISCTE\\ES\\MQTT\\src\\CloudToMongo.ini"));
+            p.load(new FileInputStream("src\\CloudToMongo.ini"));
 			mongo_address = p.getProperty("mongo_address");
             mongo_user = p.getProperty("mongo_user");
             mongo_password = p.getProperty("mongo_password");						
             mongo_replica = p.getProperty("mongo_replica");
             cloud_server = p.getProperty("cloud_server");			
-            cloud_topic = p.getProperty("cloud_topic");
+            cloud_topic = p.getProperty("cloud_topic_temp");
             mongo_host = p.getProperty("mongo_host");
             mongo_database = p.getProperty("mongo_database");
             mongo_authentication = p.getProperty("mongo_authentication");			
-            mongo_collection = p.getProperty("mongo_collection");
+            mongo_collection = p.getProperty("mongo_collection_temp");
         } catch (Exception e) {
             System.out.println("Error reading CloudToMongo.ini file " + e);
             JOptionPane.showMessageDialog(null, "The CloudToMongo.inifile wasn't found.", "CloudToMongo", JOptionPane.ERROR_MESSAGE);
         }
-        new CloudToMongo().connectMongo();
-        new CloudToMongo().connecCloud();
+        new CloudToMongoTemp().connectMongo();
+        new CloudToMongoTemp().connecCloud();
     }
 
     public void connecCloud() {
@@ -87,47 +86,6 @@ public class CloudToMongo  implements MqttCallback {
             e.printStackTrace();
         }
     }
-
-//    public void connectMongo() {
-//        String connectionString = "mongodb+srv://root:root@pisid.ltsf1ht.mongodb.net/?retryWrites=true&w=majority";
-//        MongoClientURI uri = new MongoClientURI(connectionString);
-//        MongoClient mongoClient = new MongoClient(uri);
-//        db = mongoClient.getDB("experiencia");
-//        mongocol = db.getCollection(mongo_collection);
-//    }
-
-//    public void connectMongo() {
-//        String mongoURI = "mongodb://";
-//
-//        if (mongo_authentication.equals("true")) {
-//            try {
-//                String encodedUsername = URLEncoder.encode(mongo_user, "UTF-8");
-//                String encodedPassword = URLEncoder.encode(mongo_password, "UTF-8");
-//                mongoURI = mongoURI + encodedUsername + ":" + encodedPassword + "@";
-//            } catch (UnsupportedEncodingException e) {
-//                // Handle the encoding exception appropriately
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        mongoURI = mongoURI + mongo_address;
-//
-//        if (!mongo_replica.equals("false")) {
-//            if (mongo_authentication.equals("true")) {
-//                mongoURI = mongoURI + "/?replicaSet=" + mongo_replica + "&authSource=admin";
-//            } else {
-//                mongoURI = mongoURI + "/?replicaSet=" + mongo_replica;
-//            }
-//        } else {
-//            if (mongo_authentication.equals("true")) {
-//                mongoURI = mongoURI + "/?authSource=admin";
-//            }
-//        }
-//
-//        MongoClient mongoClient = new MongoClient(new MongoClientURI(mongoURI));
-//        db = mongoClient.getDB(mongo_database);
-//        mongocol = db.getCollection(mongo_collection);
-//    }
 
     public void connectMongo()  {
 		MongoClient mongoClient = new MongoClient(new MongoClientURI(mongo_address));

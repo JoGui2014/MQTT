@@ -129,9 +129,9 @@ public class MongoMqtt_temp implements MqttCallback {
 
         try {
             Properties p = new Properties();
-            p.load(new FileInputStream("C:\\Users\\afons\\IdeaProjects\\MQTT\\src\\SendCloud.ini"));
+            p.load(new FileInputStream("src\\SendCloud.ini"));
             cloud_server = p.getProperty("cloud_server");
-            cloud_topic = p.getProperty("cloud_topic");
+            cloud_topic = p.getProperty("cloud_topic_temp");
             mongo_address = p.getProperty("mongo_address");
             mongo_user = p.getProperty("mongo_user");
             mongo_password = p.getProperty("mongo_password");
@@ -139,14 +139,14 @@ public class MongoMqtt_temp implements MqttCallback {
             mongo_host = p.getProperty("mongo_host");
             mongo_database = p.getProperty("mongo_database");
             mongo_authentication = p.getProperty("mongo_authentication");
-            mongo_collection = p.getProperty("mongo_collection");
+            mongo_collection = p.getProperty("mongo_collection_temp");
         } catch (Exception e) {
 
             System.out.println("Error reading SendCloud.ini file " + e);
             JOptionPane.showMessageDialog(null, "The SendCloud.ini file wasn't found.", "Send Cloud", JOptionPane.ERROR_MESSAGE);
         }
-        connectMongo();
         new MongoMqtt_temp().connecCloud();
+        connectMongo();
         createWindow();
 
     }
