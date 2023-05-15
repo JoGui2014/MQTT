@@ -22,16 +22,16 @@ public class MongoMqtt_temp implements MqttCallback {
     static DBCursor cursoraux;
     static DB db;
     static DBCollection mongocol;
-    static String cloud_server = new String();
-    static String cloud_topic = new String();
-    static String mongo_user = new String();
-    static String mongo_password = new String();
-    static String mongo_address = new String();
-    static String mongo_host = new String();
-    static String mongo_replica = new String();
-    static String mongo_database = new String();
-    static String mongo_collection = new String();
-    static String mongo_authentication = new String();
+    static String cloud_server = "";
+    static String cloud_topic = "";
+    static String mongo_user = "";
+    static String mongo_password = "";
+    static String mongo_address = "";
+    static String mongo_host = "";
+    static String mongo_replica = "";
+    static String mongo_database = "";
+    static String mongo_collection = "";
+    static String mongo_authentication = "";
     static JTextArea documentLabel = new JTextArea("\n");
     static JTextArea textArea = new JTextArea(10, 50);
     static LocalDate Last_Date; // Used in verifications to prevent duplicates
@@ -163,20 +163,28 @@ public class MongoMqtt_temp implements MqttCallback {
     }
 
     public static void connectMongo() {
-
-        String mongoURI = "mongodb://";
-
-        if (mongo_authentication.equals("true")) mongoURI = mongoURI + mongo_user + ":" + mongo_password + "@";
-        mongoURI = mongoURI + mongo_address;
-        if (!mongo_replica.equals("false"))
-            if (mongo_authentication.equals("true"))
-                mongoURI = mongoURI + "/?replicaSet=" + mongo_replica + "&authSource=admin";
-            else mongoURI = mongoURI + "/?replicaSet=" + mongo_replica;
-        else if (mongo_authentication.equals("true")) mongoURI = mongoURI + "/?authSource=admin";
-        MongoClient mongoClient = new MongoClient(new MongoClientURI(mongoURI));
-        db = mongoClient.getDB(mongo_database);
+        String connectionString = "mongodb+srv://root:root@pisid.ltsf1ht.mongodb.net/?retryWrites=true&w=majority";
+        MongoClientURI uri = new MongoClientURI(connectionString);
+        MongoClient mongoClient = new MongoClient(uri);
+        db = mongoClient.getDB("experiencia");
         mongocol = db.getCollection(mongo_collection);
     }
+
+//    public static void connectMongo() {
+//
+//        String mongoURI = "mongodb://";
+//
+//        if (mongo_authentication.equals("true")) mongoURI = mongoURI + mongo_user + ":" + mongo_password + "@";
+//        mongoURI = mongoURI + mongo_address;
+//        if (!mongo_replica.equals("false"))
+//            if (mongo_authentication.equals("true"))
+//                mongoURI = mongoURI + "/?replicaSet=" + mongo_replica + "&authSource=admin";
+//            else mongoURI = mongoURI + "/?replicaSet=" + mongo_replica;
+//        else if (mongo_authentication.equals("true")) mongoURI = mongoURI + "/?authSource=admin";
+//        MongoClient mongoClient = new MongoClient(new MongoClientURI(mongoURI));
+//        db = mongoClient.getDB(mongo_database);
+//        mongocol = db.getCollection(mongo_collection);
+//    }
 
 
     @Override

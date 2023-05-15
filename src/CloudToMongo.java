@@ -12,10 +12,10 @@ import java.io.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.net.URLEncoder;
 
 public class CloudToMongo  implements MqttCallback {
     MqttClient mqttclient;
-    static MongoClient mongoClient;
     static DB db;
     static DBCollection mongocol;
 	static String mongo_user = new String();
@@ -88,20 +88,51 @@ public class CloudToMongo  implements MqttCallback {
         }
     }
 
+//    public void connectMongo() {
+//        String connectionString = "mongodb+srv://root:root@pisid.ltsf1ht.mongodb.net/?retryWrites=true&w=majority";
+//        MongoClientURI uri = new MongoClientURI(connectionString);
+//        MongoClient mongoClient = new MongoClient(uri);
+//        db = mongoClient.getDB("experiencia");
+//        mongocol = db.getCollection(mongo_collection);
+//    }
+
+//    public void connectMongo() {
+//        String mongoURI = "mongodb://";
+//
+//        if (mongo_authentication.equals("true")) {
+//            try {
+//                String encodedUsername = URLEncoder.encode(mongo_user, "UTF-8");
+//                String encodedPassword = URLEncoder.encode(mongo_password, "UTF-8");
+//                mongoURI = mongoURI + encodedUsername + ":" + encodedPassword + "@";
+//            } catch (UnsupportedEncodingException e) {
+//                // Handle the encoding exception appropriately
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        mongoURI = mongoURI + mongo_address;
+//
+//        if (!mongo_replica.equals("false")) {
+//            if (mongo_authentication.equals("true")) {
+//                mongoURI = mongoURI + "/?replicaSet=" + mongo_replica + "&authSource=admin";
+//            } else {
+//                mongoURI = mongoURI + "/?replicaSet=" + mongo_replica;
+//            }
+//        } else {
+//            if (mongo_authentication.equals("true")) {
+//                mongoURI = mongoURI + "/?authSource=admin";
+//            }
+//        }
+//
+//        MongoClient mongoClient = new MongoClient(new MongoClientURI(mongoURI));
+//        db = mongoClient.getDB(mongo_database);
+//        mongocol = db.getCollection(mongo_collection);
+//    }
+
     public void connectMongo()  {
-
-		String mongoURI = "mongodb://";
-
-		if (mongo_authentication.equals("true")) mongoURI = mongoURI + mongo_user + ":" + mongo_password + "@";		
-		mongoURI = mongoURI + mongo_address;		
-		if (!mongo_replica.equals("false")) 
-			if (mongo_authentication.equals("true")) mongoURI = mongoURI + "/?replicaSet=" + mongo_replica+"&authSource=admin";
-			else mongoURI = mongoURI + "/?replicaSet=" + mongo_replica;		
-		else
-			if (mongo_authentication.equals("true")) mongoURI = mongoURI  + "/?authSource=admin";
-		MongoClient mongoClient = new MongoClient(new MongoClientURI(mongoURI));
+		MongoClient mongoClient = new MongoClient(new MongoClientURI(mongo_address));
 		db = mongoClient.getDB(mongo_database);
-        mongocol = db.getCollection(mongo_collection);		
+        mongocol = db.getCollection(mongo_collection);
     }
 
     @Override
