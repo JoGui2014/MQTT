@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Properties;
 
@@ -88,26 +89,35 @@ public class MongoMqtt_mov implements MqttCallback  {
         }
     }
 
+
     public static int isValidMessage(DBObject document) {
-        // Check if Sala is a number != 0 
-        if(document.get("SalaEntrada").toString().matches("^[1-9][0-9]*$") || document.get("SalaSaida").toString().matches("^[1-9][0-9]*$"))
+
+        // Check if Sala is a number != 0
+        if(((int)document.get("SalaEntrada")) == 0 ||  ((int)document.get("SalaSaida")) == 0) {
             return 0;
-        // Check if DataHora is a date before the current time stamp
+        }
         Object dataHoraObj = document.get("Hora");
-        LocalDate date = LocalDate.parse(dataHoraObj.toString().split(" ",0)[0]);
-        LocalTime time = LocalTime.parse(dataHoraObj.toString().split(" ",0)[1]);
-        if (Last_Date != null || Last_Time != null) {
-            if (date.isBefore(Last_Date) || time.isBefore(Last_Time))
-                return 0;
-            else
-                Last_Time= time;
-                Last_Date= date;
+        try {
+            LocalDate date = LocalDate.parse(dataHoraObj.toString().split(" ", 0)[0]);
+            LocalTime time = LocalTime.parse(dataHoraObj.toString().split(" ", 0)[1]);
+
+
+            if (Last_Date != null || Last_Time != null) {
+                if (date.isBefore(Last_Date) || time.isBefore(Last_Time) || date.isAfter(LocalDate.now()) )
+                    return 0; //duplicado
+                else {
+                    Last_Time = time;
+                    Last_Date = date;
+
+                }
+            }
+        }catch ( Exception e){
+            System.out.println("Mensagem invalida");
+            return 0;
         }
 
-        // All checks passed, return 1
         return 1;
     }
-
 
 
     public static void main(String[] args) {
