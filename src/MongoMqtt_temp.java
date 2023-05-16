@@ -97,22 +97,22 @@ public class MongoMqtt_temp implements MqttCallback {
 
     public static int isValidMessage(DBObject document) {
         // Check if Sensor is an integer bigger than 0
-//        Object sensorObj = document.get("Sensor");
-//        if (!((String)sensorObj).matches("^[1-9][0-9]*$")) {
-//            return 0;
-//        }
+        Object sensorObj = document.get("Sensor");
+        if (!((String)sensorObj).matches("^[1-9][0-9]*$")) {
+            return 0;
+        }
         // Check if DataHora is a date before the current time stamp and check for duplicates
-//        Object dataHoraObj = document.get("Hora");
-//        LocalDate date = LocalDate.parse(dataHoraObj.toString().split(" ",0)[0]);
-//        LocalTime time = LocalTime.parse(dataHoraObj.toString().split(" ",0)[1]);
-//        if (Last_Date != null || Last_Time != null) {
-//            if (date.isBefore(Last_Date) || time.isBefore(Last_Time) || date.isAfter(LocalDate.now()) || ChronoUnit.DAYS.between(Last_Date, date) > 1)
-//                return 0; //duplicado
-//            else {
-//                Last_Time = time;
-//                Last_Date = date;
-//            }
-//        }
+        Object dataHoraObj = document.get("Hora");
+        LocalDate date = LocalDate.parse(dataHoraObj.toString().split(" ",0)[0]);
+        LocalTime time = LocalTime.parse(dataHoraObj.toString().split(" ",0)[1]);
+        if (Last_Date != null || Last_Time != null) {
+            if (date.isBefore(Last_Date) || time.isBefore(Last_Time) || date.isAfter(LocalDate.now()) || ChronoUnit.DAYS.between(Last_Date, date) > 1)
+                return 0; //duplicado
+            else {
+                Last_Time = time;
+                Last_Date = date;
+            }
+        }
 
         // Check if temperatura only has , . and numbers
 //        Object leituraObj = document.get("Leitura");
