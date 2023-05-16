@@ -37,7 +37,7 @@ public class MongoMqtt_mov implements MqttCallback  {
             MqttMessage mqtt_message = new MqttMessage();
             mqtt_message.setPayload(leitura.getBytes());
             mqtt_message.setRetained(true);
-            mqtt_message.setQos(1);
+            mqtt_message.setQos(2);
             mqttclient.publish(cloud_topic, mqtt_message);
             sendMongoMQTT(b1, cursor);
         } catch (MqttException e) {
@@ -64,22 +64,22 @@ public class MongoMqtt_mov implements MqttCallback  {
 
     private static void sendMongoMQTT(JButton b1, DBCursor cursor) {
 
-        b1.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                //System.exit(0);
-                publishSensor(textArea.getText(), b1);}
-        });
+//        b1.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent evt) {
+//                //System.exit(0);
+//                publishSensor(textArea.getText(), b1);}
+//        });
         while(true){
-            cursor = cursoraux;
+//            cursor = cursoraux;
             // Iterate over the document
-            while (cursor.hasNext()) {
-                DBObject document = cursor.next();
+            while (cursoraux.hasNext()) {
+                DBObject document = cursoraux.next();
                 int isValid = isValidMessage(document);
-                textArea.append("Data Hora: "+ document.get("DataHora").toString() + " " + "Veio da sala" + document.get("SalaEntrada").toString() + " " + "para a sala" + document.get("SalaSaida").toString() +  "isValid = " + isValid + "\n");
+                textArea.setText("Data Hora: "+ document.get("Hora").toString() + " " + "Veio da sala: " + document.get("SalaEntrada").toString() + " " + "Para a sala: " + document.get("SalaSaida").toString() + " " + "isValid: " + isValid + "\n");
                 System.out.println(textArea.getText());
                 publishSensor(textArea.getText(), b1);
             }
-            cursoraux = mongocol.find().skip(cursor.numSeen());
+            cursoraux = mongocol.find().skip(cursoraux.numSeen());
             try {
                 Thread.sleep(300);
             } catch (InterruptedException e) {
@@ -114,7 +114,7 @@ public class MongoMqtt_mov implements MqttCallback  {
 
         try {
             Properties p = new Properties();
-            p.load(new FileInputStream("src/SendCloud.ini"));
+            p.load(new FileInputStream("src\\SendCloud.ini"));
             cloud_server = p.getProperty("cloud_server");
             cloud_topic = p.getProperty("cloud_topic_mov");
             mongo_address = p.getProperty("mongo_address");
@@ -151,7 +151,7 @@ public class MongoMqtt_mov implements MqttCallback  {
         String connectionString = mongo_address;
         MongoClientURI uri = new MongoClientURI(connectionString);
         MongoClient mongoClient = new MongoClient(uri);
-        db = mongoClient.getDB("experiencia");
+        db = mongoClient.getDB(mongo_database);
         mongocol = db.getCollection(mongo_collection);
     }
 
