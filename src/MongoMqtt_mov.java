@@ -90,19 +90,19 @@ public class MongoMqtt_mov implements MqttCallback  {
 
     public static int isValidMessage(DBObject document) {
         // Check if Sala is a number != 0 
-        if(document.get("SalaEntrada").toString().matches("^[1-9][0-9]*$") || document.get("SalaSaida").toString().matches("^[1-9][0-9]*$"))
-            return 0;
-        // Check if DataHora is a date before the current time stamp
-        Object dataHoraObj = document.get("Hora");
-        LocalDate date = LocalDate.parse(dataHoraObj.toString().split(" ",0)[0]);
-        LocalTime time = LocalTime.parse(dataHoraObj.toString().split(" ",0)[1]);
-        if (Last_Date != null || Last_Time != null) {
-            if (date.isBefore(Last_Date) || time.isBefore(Last_Time))
-                return 0;
-            else
-                Last_Time= time;
-                Last_Date= date;
-        }
+//        if(document.get("SalaEntrada").toString().matches("^[1-9][0-9]*$") || document.get("SalaSaida").toString().matches("^[1-9][0-9]*$"))
+//            return 0;
+//        // Check if DataHora is a date before the current time stamp
+//        Object dataHoraObj = document.get("Hora");
+//        LocalDate date = LocalDate.parse(dataHoraObj.toString().split(" ",0)[0]);
+//        LocalTime time = LocalTime.parse(dataHoraObj.toString().split(" ",0)[1]);
+//        if (Last_Date != null || Last_Time != null) {
+//            if (date.isBefore(Last_Date) || time.isBefore(Last_Time))
+//                return 0;
+//            else
+//                Last_Time= time;
+//                Last_Date= date;
+//        }
 
         // All checks passed, return 1
         return 1;

@@ -81,9 +81,9 @@ public class MongoMqtt_temp implements MqttCallback {
             while (cursoraux.hasNext()) {
                 DBObject document = cursoraux.next();
                 int isValid = isValidMessage(document);
-                System.out.println();
+//                System.out.println();
                 textArea.setText("Sensor: " + document.get("Sensor").toString() + " " + "Hora: " + document.get("Hora").toString() + " " + "Leitura: " + document.get("Leitura").toString() + " " + "isValid = " + isValid + "\n");
-//                System.out.println(textArea.getText());
+               System.out.println(textArea.getText());
                 publishSensor(textArea.getText(), b1);
             }
             cursoraux = mongocol.find().skip(cursoraux.numSeen());
