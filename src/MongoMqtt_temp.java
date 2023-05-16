@@ -166,25 +166,10 @@ public class MongoMqtt_temp implements MqttCallback {
         String connectionString = mongo_address;
         MongoClientURI uri = new MongoClientURI(connectionString);
         MongoClient mongoClient = new MongoClient(uri);
-        db = mongoClient.getDB("experiencia");
+        db = mongoClient.getDB(mongo_database);
         mongocol = db.getCollection(mongo_collection);
     }
 
-//    public static void connectMongo() {
-//
-//        String mongoURI = "mongodb://";
-//
-//        if (mongo_authentication.equals("true")) mongoURI = mongoURI + mongo_user + ":" + mongo_password + "@";
-//        mongoURI = mongoURI + mongo_address;
-//        if (!mongo_replica.equals("false"))
-//            if (mongo_authentication.equals("true"))
-//                mongoURI = mongoURI + "/?replicaSet=" + mongo_replica + "&authSource=admin";
-//            else mongoURI = mongoURI + "/?replicaSet=" + mongo_replica;
-//        else if (mongo_authentication.equals("true")) mongoURI = mongoURI + "/?authSource=admin";
-//        MongoClient mongoClient = new MongoClient(new MongoClientURI(mongoURI));
-//        db = mongoClient.getDB(mongo_database);
-//        mongocol = db.getCollection(mongo_collection);
-//    }
 
 
     @Override
