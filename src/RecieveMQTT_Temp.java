@@ -63,7 +63,7 @@ public class RecieveMQTT_Temp implements MqttCallback {
         try{
             Properties b = new Properties();
             b.load(new FileInputStream("src\\WriteMysql.ini"));
-            sql_table_to= b.getProperty("sql_table_to");
+            sql_table_to= b.getProperty("sql_table_to_temp");
             sql_database_connection_to = b.getProperty("sql_database_connection_to");
             sql_database_password_to = b.getProperty("sql_database_password_to");
             sql_database_user_to= b.getProperty("sql_database_user_to");
