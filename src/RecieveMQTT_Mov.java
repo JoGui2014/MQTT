@@ -121,7 +121,7 @@ public class RecieveMQTT_Mov implements MqttCallback {
 
     public void WriteToMySQL (String messageMqtt){
 //        System.out.println( "\"" + messageMqtt.split(" ")[3] + " " + messageMqtt.split(" ")[4] + "\"");
-        String SqlCommando = "Insert into " + sql_table_to + "(`Hora`, `Leitura`, `Sensor`, `isValid`)" + " " + "VALUES" + " " + "(" + "\"" + messageMqtt.split(" ")[3] + " " + messageMqtt.split(" ")[4] + "\"" + "," + messageMqtt.split(" ")[6] + "," + messageMqtt.split(" ")[1] + "," + messageMqtt.split(" ")[9] + ")";
+        String SqlCommando = "Insert into " + sql_table_to + "(`Hora`, `SalaEntrada`, `SalaSaida`, `isValid`)" + " " + "VALUES" + " " + "(" + "\"" + messageMqtt.split(" ")[3] + " " + messageMqtt.split(" ")[4] + "\"" + "," + messageMqtt.split(" ")[6] + "," + messageMqtt.split(" ")[1] + "," + messageMqtt.split(" ")[9] + ")";
         try {
             documentLabel.append(SqlCommando.toString()+"\n");
         } catch (Exception e) {
