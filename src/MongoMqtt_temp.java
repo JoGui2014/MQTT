@@ -95,34 +95,8 @@ public class MongoMqtt_temp implements MqttCallback {
         }
     }
 
-    public static int isValidMessage(DBObject document) {
-        // Check if Sensor is an integer bigger than 0
-//        Object sensorObj = document.get("Sensor");
-//        if (!((String)sensorObj).matches("^[1-9][0-9]*$")) {
-//            return 0;
-//        }
-        // Check if DataHora is a date before the current time stamp and check for duplicates
-//        Object dataHoraObj = document.get("Hora");
-//        LocalDate date = LocalDate.parse(dataHoraObj.toString().split(" ",0)[0]);
-//        LocalTime time = LocalTime.parse(dataHoraObj.toString().split(" ",0)[1]);
-//        if (Last_Date != null || Last_Time != null) {
-//            if (date.isBefore(Last_Date) || time.isBefore(Last_Time) || date.isAfter(LocalDate.now()) || ChronoUnit.DAYS.between(Last_Date, date) > 1)
-//                return 0; //duplicado
-//            else {
-//                Last_Time = time;
-//                Last_Date = date;
-//            }
-//        }
 
-        // Check if temperatura only has , . and numbers
-//        Object leituraObj = document.get("Leitura");
-//        if (!((String)leituraObj).matches("^[0-9,.]*$")) {
-//            return 0;
-//        }
-
-        // All checks passed, return 1
-        return 1;
-    }
+        // All checks passed, retur
 
 
     public static void main(String[] args) {
@@ -168,6 +142,48 @@ public class MongoMqtt_temp implements MqttCallback {
         MongoClient mongoClient = new MongoClient(uri);
         db = mongoClient.getDB(mongo_database);
         mongocol = db.getCollection(mongo_collection);
+    }
+
+    public static int isValidMessage(DBObject document) {
+
+
+        Object tempObj = document.get("Leitura");
+        System.out.println(tempObj.toString());
+        try {
+            // Try parsing as an integer
+            int intValue = Integer.parseInt(tempObj.toString());
+
+        } catch (NumberFormatException e1) {
+            try {
+                // Try parsing as a double
+                double doubleValue = Double.parseDouble(tempObj.toString());
+            } catch (NumberFormatException e2) {
+
+                System.out.println("Not a valid number");
+                return 0;
+            }
+        }
+
+
+        Object dataHoraObj = document.get("Hora");
+        try {
+            LocalDate date = LocalDate.parse(dataHoraObj.toString().split(" ", 0)[0]);
+            LocalTime time = LocalTime.parse(dataHoraObj.toString().split(" ", 0)[1]);
+            if (Last_Date != null || Last_Time != null) {
+                if (date.isBefore(Last_Date) || time.isBefore(Last_Time) || date.isAfter(LocalDate.now()))
+                    return 0; //duplicado
+                else {
+                    Last_Time = time;
+                    Last_Date = date;
+
+                }
+            }
+        }catch ( Exception e){
+            System.out.println("Mensagem invalida");
+            return 0;
+        }
+
+        return 1;
     }
 
 

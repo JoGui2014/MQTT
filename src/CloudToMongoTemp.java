@@ -27,30 +27,30 @@ public class CloudToMongoTemp implements MqttCallback {
 	static String mongo_database = new String();
     static String mongo_collection = new String();
 	static String mongo_authentication = new String();
-	static JTextArea documentLabel = new JTextArea("\n");  
-	
+	static JTextArea documentLabel = new JTextArea("\n");
 
-	private static void createWindow() {      	
-	JFrame frame = new JFrame("Cloud to Mongo");    
-	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);       
-	JLabel textLabel = new JLabel("Data from broker: ",SwingConstants.CENTER);       
-	textLabel.setPreferredSize(new Dimension(600, 30));   
-	JScrollPane scroll = new JScrollPane (documentLabel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);	
-	scroll.setPreferredSize(new Dimension(600, 200)); 	
+
+	private static void createWindow() {
+	JFrame frame = new JFrame("Cloud to Mongo");
+	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	JLabel textLabel = new JLabel("Data from broker: ",SwingConstants.CENTER);
+	textLabel.setPreferredSize(new Dimension(600, 30));
+	JScrollPane scroll = new JScrollPane (documentLabel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+	scroll.setPreferredSize(new Dimension(600, 200));
 	JButton b1 = new JButton("Stop the program");
-	frame.getContentPane().add(textLabel, BorderLayout.PAGE_START);	
-	frame.getContentPane().add(scroll, BorderLayout.CENTER);	
-	frame.getContentPane().add(b1, BorderLayout.PAGE_END);		
-	frame.setLocationRelativeTo(null);      
-	frame.pack();      
-	frame.setVisible(true);    
+	frame.getContentPane().add(textLabel, BorderLayout.PAGE_START);
+	frame.getContentPane().add(scroll, BorderLayout.CENTER);
+	frame.getContentPane().add(b1, BorderLayout.PAGE_END);
+	frame.setLocationRelativeTo(null);
+	frame.pack();
+	frame.setVisible(true);
 	b1.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent evt) {
 			System.exit(0);
 		}
 	});
 }
-	
+
     public static void main(String[] args) throws IOException {
 		createWindow();
         try {
@@ -58,14 +58,15 @@ public class CloudToMongoTemp implements MqttCallback {
             p.load(new FileInputStream("src\\CloudToMongo.ini"));
 			mongo_address = p.getProperty("mongo_address");
             mongo_user = p.getProperty("mongo_user");
-            mongo_password = p.getProperty("mongo_password");						
+            mongo_password = p.getProperty("mongo_password");
             mongo_replica = p.getProperty("mongo_replica");
-            cloud_server = p.getProperty("cloud_server");			
+            cloud_server = p.getProperty("cloud_server");
             cloud_topic = p.getProperty("cloud_topic_temp");
             mongo_host = p.getProperty("mongo_host");
             mongo_database = p.getProperty("mongo_database");
-            mongo_authentication = p.getProperty("mongo_authentication");			
+            mongo_authentication = p.getProperty("mongo_authentication");
             mongo_collection = p.getProperty("mongo_collection_temp");
+
         } catch (Exception e) {
             System.out.println("Error reading CloudToMongo.ini file " + e);
             JOptionPane.showMessageDialog(null, "The CloudToMongo.inifile wasn't found.", "CloudToMongo", JOptionPane.ERROR_MESSAGE);
@@ -91,6 +92,10 @@ public class CloudToMongoTemp implements MqttCallback {
 		MongoClient mongoClient = new MongoClient(new MongoClientURI(mongo_address));
 		db = mongoClient.getDB(mongo_database);
         mongocol = db.getCollection(mongo_collection);
+
+        if (db.collectionExists(mongo_collection)) {
+            mongocol.drop();
+        }
     }
 
     @Override
@@ -99,11 +104,33 @@ public class CloudToMongoTemp implements MqttCallback {
         try {
                 DBObject document_json;
                 document_json = (DBObject) JSON.parse(c.toString());
-                mongocol.insert(document_json);     	
-				documentLabel.append(c.toString()+"\n");				
+                mongocol.insert(document_json);
+				documentLabel.append(c.toString()+"\n");
         } catch (Exception e) {
             System.out.println(e);
         }
+    }
+
+    public static int isValidMessage(DBObject document) {
+
+
+        Object tempObj = document.get("Leitura");
+        System.out.println(tempObj.toString());
+        try {
+            // Try parsing as an integer
+            int intValue = Integer.parseInt(tempObj.toString());
+
+        } catch (NumberFormatException e1) {
+            try {
+                // Try parsing as a double
+                double doubleValue = Double.parseDouble(tempObj.toString());
+            } catch (NumberFormatException e2) {
+
+                System.out.println("Not a valid number");
+                return 0;
+            }
+        }
+        return 1;
     }
 
     @Override
@@ -112,5 +139,5 @@ public class CloudToMongoTemp implements MqttCallback {
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
-    }	
+    }
 }

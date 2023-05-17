@@ -91,6 +91,10 @@ public class CloudToMongoMov implements MqttCallback {
         MongoClient mongoClient = new MongoClient(new MongoClientURI(mongo_address));
         db = mongoClient.getDB(mongo_database);
         mongocol = db.getCollection(mongo_collection);
+
+        if (db.collectionExists(mongo_collection)) {
+            mongocol.drop();
+        }
     }
 
     @Override
